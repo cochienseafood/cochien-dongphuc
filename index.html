@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đăng ký đồng phục – Cochien Seafood</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue:    #1d4ed8;
+    --blue-lt: #eff6ff;
+    --blue-bd: #93c5fd;
+    --green:   #16a34a;
+    --green-lt:#f0fdf4;
+    --green-bd:#86efac;
+    --red:     #dc2626;
+    --red-lt:  #fef2f2;
+    --amber:   #d97706;
+    --amber-lt:#fffbeb;
+    --gray:    #6b7280;
+    --gray-lt: #f9fafb;
+    --border:  #e5e7eb;
+    --text:    #111827;
+    --text2:   #6b7280;
+    --radius:  12px;
+    --shadow:  0 2px 12px rgba(0,0,0,.08);
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+    min-height: 100vh;
+    padding: 16px;
+    color: var(--text);
+  }
+
+  .container { max-width: 520px; margin: 0 auto; }
+
+  /* HEADER */
+  .header {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .header h1 { font-size: 22px; font-weight: 700; color: var(--blue); margin-bottom: 4px; }
+  .header p  { font-size: 13px; color: var(--text2); }
+
+  /* DOT SELECTOR */
+  .dot-row { display: flex; gap: 8px; margin-top: 14px; }
+  .dot-row select {
+    flex: 1; padding: 10px 12px; border: 1.5px solid var(--blue-bd);
+    border-radius: 8px; font-size: 14px; font-weight: 600; color: var(--blue);
+    background: var(--blue-lt); outline: none; cursor: pointer;
+  }
+  .btn-refresh {
+    width: 42px; height: 42px; border: 1.5px solid var(--border);
+    border-radius: 8px; background: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; transition: transform .3s;
+  }
+  .btn-refresh.spinning { animation: spin .6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* CARD */
+  .card {
+    background: #fff; border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 20px; margin-bottom: 16px;
+  }
+
+  /* FORM */
+  .field { margin-bottom: 16px; }
+  .field label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .field label span { color: var(--red); }
+  .field input, .field select {
+    width: 100%; padding: 11px 14px; border: 1.5px solid var(--border);
+    border-radius: 8px; font-size: 15px; outline: none;
+    transition: border-color .2s;
+  }
+  .field input:focus, .field select:focus { border-color: var(--blue); }
+  .hint { font-size: 12px; color: var(--blue); margin-top: 5px; font-weight: 500; }
+
+  /* RADIO */
+  .radio-row { display: flex; gap: 20px; }
+  .radio-row label {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 15px; cursor: pointer; font-weight: 400;
+  }
+  .radio-row input[type=radio] { width: 18px; height: 18px; accent-color: var(--blue); }
+
+  /* BUTTONS */
+  .btn {
+    width: 100%; padding: 14px; border: none; border-radius: 10px;
+    font-size: 16px; font-weight: 700; cursor: pointer;
+    transition: opacity .2s, transform .1s;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn-primary { background: var(--blue); color: #fff; }
+  .btn-primary:hover { opacity: .9; }
+  .btn-success { background: var(--green); color: #fff; }
+  .btn-gray { background: #e5e7eb; color: var(--text); }
+  .btn-row { display: flex; gap: 10px; }
+  .btn-row .btn { width: auto; flex: 1; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  /* INFO BOX */
+  .info-box {
+    background: var(--blue-lt); border: 1.5px solid var(--blue-bd);
+    border-radius: 8px; padding: 12px 14px; margin-bottom: 16px;
+  }
+  .info-box strong { font-size: 14px; color: var(--blue); display: block; }
+  .info-box span { font-size: 12px; color: var(--blue); }
+
+  /* SECTION TITLE */
+  .sec-title { font-size: 14px; font-weight: 700; margin: 16px 0 10px; }
+
+  /* SIZE GRID */
+  .size-grid { display: grid; gap: 8px; }
+  .size-grid.cols4 { grid-template-columns: repeat(4,1fr); }
+  .size-grid.cols5 { grid-template-columns: repeat(5,1fr); }
+  .size-grid.cols8 { grid-template-columns: repeat(4,1fr); }
+
+  .size-btn {
+    position: relative; padding: 10px 4px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    background: #fff; font-size: 13px; font-weight: 600;
+    cursor: pointer; text-align: center; transition: all .15s;
+    user-select: none;
+  }
+  .size-btn:active { transform: scale(.95); }
+  .size-btn.selected-blue   { border-color: #3b82f6; background: #eff6ff; color: #1d4ed8; }
+  .size-btn.selected-indigo { border-color: #6366f1; background: #eef2ff; color: #4338ca; }
+  .size-btn.selected-amber  { border-color: #f59e0b; background: #fffbeb; color: #92400e; }
+  .size-btn.selected-green  { border-color: #22c55e; background: #f0fdf4; color: #15803d; }
+  .size-btn.selected-cyan   { border-color: #06b6d4; background: #ecfeff; color: #0e7490; }
+  .size-btn.selected-purple { border-color: #a855f7; background: #faf5ff; color: #7e22ce; }
+
+  .badge {
+    position: absolute; top: -7px; right: -7px;
+    background: var(--red); color: #fff; border-radius: 50%;
+    width: 18px; height: 18px; font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .del-btn {
+    position: absolute; top: -7px; left: -7px;
+    background: var(--red); color: #fff; border-radius: 50%;
+    width: 18px; height: 18px; font-size: 11px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; border: none; line-height: 1;
+  }
+
+  /* HAT SECTION */
+  .hat-item { background: var(--gray-lt); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+  .hat-item p { font-size: 12px; font-weight: 700; margin-bottom: 8px; }
+
+  /* MESSAGE */
+  .msg {
+    border-radius: 10px; padding: 12px 16px;
+    font-size: 14px; font-weight: 600; text-align: center;
+    margin-bottom: 16px;
+  }
+  .msg.error   { background: var(--red-lt);   color: var(--red);   border: 1.5px solid #fca5a5; }
+  .msg.warn    { background: var(--amber-lt); color: var(--amber); border: 1.5px solid #fcd34d; }
+  .msg.success { background: var(--green-lt); color: var(--green); border: 1.5px solid var(--green-bd); }
+
+  /* DONE */
+  .done-card { text-align: center; padding: 20px; }
+  .done-icon { font-size: 64px; margin-bottom: 12px; }
+  .done-card h2 { font-size: 22px; font-weight: 700; color: var(--green); margin-bottom: 16px; }
+  .done-info {
+    background: var(--green-lt); border: 1.5px solid var(--green-bd);
+    border-radius: 10px; padding: 14px; text-align: left; margin-bottom: 16px;
+  }
+  .done-info p { font-size: 13px; margin-bottom: 4px; color: var(--text2); }
+  .done-info strong { color: var(--text); }
+
+  /* HIDDEN */
+  .hidden { display: none !important; }
+
+  /* LOADING SPINNER */
+  .spinner {
+    display: inline-block; width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,.4); border-top-color: #fff;
+    border-radius: 50%; animation: spin .6s linear infinite;
+    vertical-align: middle; margin-right: 6px;
+  }
+
+  @media (max-width: 400px) {
+    .size-grid.cols8 { grid-template-columns: repeat(4,1fr); }
+    .size-grid.cols5 { grid-template-columns: repeat(5,1fr); }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <h1>👔 ĐĂNG KÝ ĐỒNG PHỤC</h1>
+    <p>Cochien Seafood Processing Factory</p>
+    <div class="dot-row">
+      <select id="selDot"><option value="">-- Đang tải đợt... --</option></select>
+      <button class="btn-refresh" id="btnRefresh" onclick="loadDots()" title="Tải lại">🔄</button>
+    </div>
+  </div>
+
+  <!-- MESSAGE -->
+  <div id="msgBox" class="msg hidden"></div>
+
+  <!-- STEP 1: FORM -->
+  <div id="step1" class="card">
+    <div class="field">
+      <label>Họ tên <span>*</span></label>
+      <input id="inpName" type="text" placeholder="VD: NGUYỄN VĂN A"
+        oninput="this.value=this.value.toUpperCase()">
+    </div>
+
+    <div class="field">
+      <label>Bộ phận <span>*</span></label>
+      <select id="inpDept" onchange="onDeptChange()">
+        <option value="">-- Chọn --</option>
+        <option>Px Cook</option><option>Px Raw</option><option>Px Lạnh</option>
+        <option>ĐH</option><option>Lab</option><option>Thu mua</option><option>KVT</option>
+      </select>
+    </div>
+
+    <div class="field hidden" id="fieldTo">
+      <label>Tổ <span>*</span></label>
+      <input id="inpTo" type="text" placeholder="VD: Tổ 1">
+    </div>
+
+    <div class="field">
+      <label>Barcode CyyABCD <span>*</span></label>
+      <input id="inpBarcode" type="text" placeholder="VD: C230001" maxlength="7"
+        oninput="this.value=this.value.toUpperCase().replace(/[^A-Z0-9]/g,'').slice(0,7); updateSeniority()">
+      <div id="seniority" class="hint hidden"></div>
+    </div>
+
+    <div class="field">
+      <label>Giới tính <span>*</span></label>
+      <div class="radio-row">
+        <label><input type="radio" name="gender" value="Nam"> Nam</label>
+        <label><input type="radio" name="gender" value="Nữ"> Nữ</label>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="goToStep2()">Tiếp tục →</button>
+  </div>
+
+  <!-- STEP 2: SELECTION -->
+  <div id="step2" class="card hidden">
+    <div class="info-box" id="infoBox"></div>
+
+    <!-- NỮ -->
+    <div id="secFemale" class="hidden">
+      <div class="sec-title">👕 Tay ngắn (size 1–8)</div>
+      <div class="size-grid cols8" id="gridFShort"></div>
+      <div class="sec-title">👕 Tay dài (size 1–8)</div>
+      <div class="size-grid cols8" id="gridFLong"></div>
+    </div>
+
+    <!-- NAM -->
+    <div id="secMale" class="hidden">
+      <div class="sec-title">👖 Quần (size 4–8)</div>
+      <div class="size-grid cols5" id="gridPants"></div>
+      <div class="sec-title">👕 Áo tay dài (size 4–8)</div>
+      <div class="size-grid cols5" id="gridShirtLong"></div>
+      <div class="sec-title">👕 Áo tay ngắn (size 4–8)</div>
+      <div class="size-grid cols5" id="gridShirtShort"></div>
+    </div>
+
+    <!-- NÓN -->
+    <div class="sec-title">🎩 Nón choàng (tối đa 2 cái, size 1–4)</div>
+    <div id="hatSection"></div>
+
+    <div class="btn-row" style="margin-top:16px;">
+      <button class="btn btn-gray" onclick="goBack()">← Quay lại</button>
+      <button class="btn btn-success" id="btnFinish" onclick="finish()">✓ Xác nhận</button>
+    </div>
+  </div>
+
+  <!-- DONE -->
+  <div id="stepDone" class="card done-card hidden">
+    <div class="done-icon">✅</div>
+    <h2>Đăng ký thành công!</h2>
+    <div class="done-info" id="doneInfo"></div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">
+      Dữ liệu đã lưu vào Google Sheets. Quản lý sẽ liên hệ khi có lịch phát.
+    </p>
+    <button class="btn btn-primary" onclick="resetApp()">Đăng ký nhân viên khác</button>
+  </div>
+
+</div>
+
+<script>
+// ========== CONFIG ==========
+const URL_GAS = 'https://script.google.com/macros/s/AKfycbxdbNoPpnCC6gVTcuStDHj6WWPNLIxWgAtj9itisDUdNrDF_kWVQyCNkoqJtmasPncF/exec';
+
+const PROC_DEPTS = ['Px Cook','Px Raw','Px Lạnh'];
+const YEAR = new Date().getFullYear();
+const PROC_HATS = [
+  {n:'Trắng viền đỏ',i:'wr'},{n:'Tím viền trắng',i:'pw'},{n:'Tím viền đỏ',i:'pr'},
+  {n:'Xanh dương',i:'b'},{n:'Trắng viền xanh dương',i:'wb'}
+];
+const OFFICE_HATS = [
+  {n:'Trắng viền đỏ',i:'wr'},{n:'Xanh viền vàng',i:'gy'},{n:'Vàng viền xanh',i:'yg'},
+  {n:'Vàng',i:'y'},{n:'Vàng viền đỏ',i:'yr'},{n:'Đỏ',i:'r'}
+];
+
+// ========== STATE ==========
+let selections = {};
+let isLong = false;
+
+// ========== JSONP ==========
+function jsonp(params) {
+  return new Promise((res, rej) => {
+    const cb = 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+    const qs = new URLSearchParams({...params, callback: cb, t: Date.now()});
+    window[cb] = (data) => { cleanup(); res(data); };
+    const s = document.createElement('script');
+    s.src = URL_GAS + '?' + qs;
+    s.onerror = () => { cleanup(); rej(new Error('Network error')); };
+    const timer = setTimeout(() => { cleanup(); rej(new Error('Timeout sau 10s')); }, 10000);
+    function cleanup() {
+      clearTimeout(timer);
+      delete window[cb];
+      try { document.head.removeChild(s); } catch(e) {}
+    }
+    document.head.appendChild(s);
+  });
+}
+
+// ========== HELPERS ==========
+function getSeniority(bc) {
+  if (!bc || bc.length < 3) return null;
+  const yy = parseInt(bc.substring(1,3));
+  return isNaN(yy) ? null : YEAR - (2000 + yy);
+}
+function showMsg(text, type='warn') {
+  const el = document.getElementById('msgBox');
+  el.textContent = text;
+  el.className = 'msg ' + type;
+}
+function hideMsg() {
+  document.getElementById('msgBox').className = 'msg hidden';
+}
+function show(id) { document.getElementById(id).classList.remove('hidden'); }
+function hide(id) { document.getElementById(id).classList.add('hidden'); }
+
+// ========== LOAD DOTS ==========
+async function loadDots() {
+  const btn = document.getElementById('btnRefresh');
+  btn.classList.add('spinning');
+  try {
+    const res = await jsonp({action:'getDots'});
+    const sel = document.getElementById('selDot');
+    if (res.success && res.data && res.data.length > 0) {
+      sel.innerHTML = res.data.map(d =>
+        `<option value="${d.id}">${d.name}</option>`
+      ).join('');
+      hideMsg();
+    } else {
+      sel.innerHTML = '<option value="">-- Chưa có đợt nào --</option>';
+      showMsg('⚠️ Chưa có đợt phát. Vào Google Sheets → 🎽 Đồng Phục → Tạo đợt mới', 'warn');
+    }
+  } catch(e) {
+    showMsg('❌ Không kết nối được server: ' + e.message, 'error');
+  }
+  btn.classList.remove('spinning');
+}
+
+// ========== DEPT CHANGE ==========
+function onDeptChange() {
+  const dept = document.getElementById('inpDept').value;
+  if (PROC_DEPTS.includes(dept)) show('fieldTo');
+  else hide('fieldTo');
+}
+
+// ========== SENIORITY ==========
+function updateSeniority() {
+  const bc = document.getElementById('inpBarcode').value;
+  const el = document.getElementById('seniority');
+  const s = getSeniority(bc);
+  if (s !== null && bc.length === 7) {
+    el.textContent = `📊 Thâm niên: ${s} năm | Giới hạn: ${s >= 3 ? 1 : 2} bộ/cái`;
+    el.classList.remove('hidden');
+  } else {
+    el.classList.add('hidden');
+  }
+}
+
+// ========== STEP 2 ==========
+async function goToStep2() {
+  hideMsg();
+  const name    = document.getElementById('inpName').value.trim();
+  const dept    = document.getElementById('inpDept').value;
+  const to      = document.getElementById('inpTo').value.trim();
+  const bc      = document.getElementById('inpBarcode').value.trim();
+  const gender  = document.querySelector('input[name=gender]:checked')?.value;
+  const dot     = document.getElementById('selDot').value;
+
+  const errs = [];
+  if (!dot)                           errs.push('Chọn đợt phát');
+  if (!name)                          errs.push('Nhập họ tên');
+  if (!dept)                          errs.push('Chọn bộ phận');
+  if (PROC_DEPTS.includes(dept) && !to) errs.push('Nhập tổ');
+  if (!bc)                            errs.push('Nhập barcode');
+  else if (!/^C\d{2}[A-Z0-9]{4}$/.test(bc)) errs.push('Barcode phải là CyyABCD (7 ký tự)');
+  if (!gender)                        errs.push('Chọn giới tính');
+  if (errs.length) { showMsg('❌ ' + errs.join(' | '), 'error'); return; }
+
+  // Kiểm tra barcode trùng
+  const btn = document.querySelector('#step1 .btn-primary');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Đang kiểm tra...';
+  try {
+    const res = await jsonp({action:'checkBarcode', barcode: bc, dot});
+    if (res.exists) {
+      showMsg(`❌ Barcode ${bc} đã đăng ký trong đợt này rồi!`, 'error');
+      btn.disabled = false; btn.textContent = 'Tiếp tục →'; return;
+    }
+  } catch(e) { /* bỏ qua nếu lỗi mạng */ }
+  btn.disabled = false; btn.textContent = 'Tiếp tục →';
+
+  // Setup selection screen
+  selections = {};
+  const sen = getSeniority(bc);
+  isLong = sen >= 3;
+  const maxC = isLong ? 1 : 2;
+
+  document.getElementById('infoBox').innerHTML =
+    `<strong>${name} | ${dept}${to ? ' – '+to : ''}</strong>
+     <span>Thâm niên: ${sen}n | Giới hạn: <b>${maxC} bộ/cái</b> | Đợt: ${document.getElementById('selDot').options[document.getElementById('selDot').selectedIndex].text}</span>`;
+
+  buildGrids(gender, dept);
+  hide('step1'); hideMsg(); show('step2');
+}
+
+// ========== BUILD SIZE GRIDS ==========
+function makeBtn(key, label, color) {
+  const wrap = document.createElement('div');
+  wrap.style.position = 'relative';
+
+  const btn = document.createElement('button');
+  btn.className = 'size-btn';
+  btn.textContent = label;
+  btn.onclick = () => addSel(key, color, btn, badge, del);
+
+  const badge = document.createElement('div');
+  badge.className = 'badge hidden';
+
+  const del = document.createElement('button');
+  del.className = 'del-btn hidden';
+  del.textContent = '✕';
+  del.onclick = (e) => { e.stopPropagation(); removeSel(key, btn, badge, del); };
+
+  wrap.appendChild(btn); wrap.appendChild(badge); wrap.appendChild(del);
+  return wrap;
+}
+
+function buildGrid(containerId, keys, color) {
+  const el = document.getElementById(containerId);
+  el.innerHTML = '';
+  keys.forEach(([key, label]) => el.appendChild(makeBtn(key, label, color)));
+}
+
+function buildGrids(gender, dept) {
+  hide('secFemale'); hide('secMale');
+  if (gender === 'Nữ') {
+    buildGrid('gridFShort', [1,2,3,4,5,6,7,8].map(s => [`f_short_${s}`, String(s)]), 'blue');
+    buildGrid('gridFLong',  [1,2,3,4,5,6,7,8].map(s => [`f_long_${s}`,  String(s)]), 'indigo');
+    show('secFemale');
+  } else {
+    buildGrid('gridPants',     [4,5,6,7,8].map(s => [`m_pants_${s}`,      String(s)]), 'amber');
+    buildGrid('gridShirtLong', [4,5,6,7,8].map(s => [`m_shirt_long_${s}`, String(s)]), 'green');
+    buildGrid('gridShirtShort',[4,5,6,7,8].map(s => [`m_shirt_short_${s}`,String(s)]), 'cyan');
+    show('secMale');
+  }
+
+  // Hats
+  const hats = PROC_DEPTS.includes(dept) ? PROC_HATS : OFFICE_HATS;
+  const sec = document.getElementById('hatSection');
+  sec.innerHTML = '';
+  hats.forEach(h => {
+    const div = document.createElement('div');
+    div.className = 'hat-item';
+    div.innerHTML = `<p>${h.n}</p>`;
+    const grid = document.createElement('div');
+    grid.className = 'size-grid cols4';
+    [1,2,3,4].forEach(s => grid.appendChild(makeBtn(`hat_${h.i}_${s}`, `S${s}`, 'purple')));
+    div.appendChild(grid);
+    sec.appendChild(div);
+  });
+}
+
+// ========== SELECTION LOGIC ==========
+function getTotal(type) {
+  return Object.entries(selections)
+    .filter(([k]) => k.includes(type))
+    .reduce((s,[,v]) => s+v, 0);
+}
+function maxClothes() { return isLong ? 1 : 2; }
+
+function addSel(key, color, btn, badge, del) {
+  hideMsg();
+  const max = maxClothes();
+  if ((key.includes('f_short')||key.includes('f_long')) && getTotal('f_short')+getTotal('f_long') >= max) {
+    showMsg(`⚠️ Áo nữ tối đa ${max} bộ`, 'warn'); return;
+  }
+  if (key.includes('m_pants') && getTotal('m_pants') >= max) {
+    showMsg(`⚠️ Quần tối đa ${max} cái`, 'warn'); return;
+  }
+  if (key.includes('m_shirt') && getTotal('m_shirt') >= max) {
+    showMsg(`⚠️ Áo tối đa ${max} cái`, 'warn'); return;
+  }
+  if (key.includes('hat_') && getTotal('hat_') >= 2) {
+    showMsg('⚠️ Nón tối đa 2 cái', 'warn'); return;
+  }
+  selections[key] = (selections[key]||0) + 1;
+  btn.className = 'size-btn selected-' + color;
+  btn.textContent = btn.textContent.replace(/ \(\d+\)$/,'') + ` (${selections[key]})`;
+  badge.textContent = selections[key]; badge.classList.remove('hidden');
+  del.classList.remove('hidden');
+}
+
+function removeSel(key, btn, badge, del) {
+  hideMsg();
+  if (!selections[key]) return;
+  selections[key]--;
+  if (selections[key] <= 0) {
+    delete selections[key];
+    btn.className = 'size-btn';
+    btn.textContent = btn.textContent.replace(/ \(\d+\)$/,'');
+    badge.classList.add('hidden');
+    del.classList.add('hidden');
+  } else {
+    badge.textContent = selections[key];
+    btn.textContent = btn.textContent.replace(/ \(\d+\)$/,'') + ` (${selections[key]})`;
+  }
+}
+
+function goBack() { hide('step2'); show('step1'); hideMsg(); }
+
+// ========== FINISH ==========
+async function finish() {
+  if (!Object.keys(selections).length) { showMsg('⚠️ Chưa chọn gì', 'warn'); return; }
+  const btn = document.getElementById('btnFinish');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Đang gửi...';
+
+  const name   = document.getElementById('inpName').value.trim();
+  const dept   = document.getElementById('inpDept').value;
+  const to     = document.getElementById('inpTo').value.trim();
+  const bc     = document.getElementById('inpBarcode').value.trim();
+  const gender = document.querySelector('input[name=gender]:checked').value;
+  const dot    = document.getElementById('selDot').value;
+  const sen    = getSeniority(bc);
+
+  try {
+    const res = await jsonp({
+      action:'submitOrder', dot, name, dept,
+      subUnit: to, barcode: bc, gender,
+      seniority: sen,
+      selections: JSON.stringify(selections)
+    });
+    if (res.success) {
+      const dotName = document.getElementById('selDot').options[document.getElementById('selDot').selectedIndex].text;
+      document.getElementById('doneInfo').innerHTML = `
+        <p><strong>${name}</strong></p>
+        <p>${dept}${to?' – '+to:''} | ${gender}</p>
+        <p>Barcode: <strong>${bc}</strong></p>
+        <p>Đợt: <strong>${dotName}</strong></p>`;
+      hide('step2'); hideMsg(); show('stepDone');
+    } else {
+      showMsg('❌ ' + res.message, 'error');
+    }
+  } catch(e) {
+    showMsg('❌ Lỗi kết nối: ' + e.message, 'error');
+  }
+  btn.disabled = false;
+  btn.innerHTML = '✓ Xác nhận';
+}
+
+// ========== RESET ==========
+function resetApp() {
+  document.getElementById('inpName').value = '';
+  document.getElementById('inpDept').value = '';
+  document.getElementById('inpTo').value = '';
+  document.getElementById('inpBarcode').value = '';
+  document.querySelectorAll('input[name=gender]').forEach(r => r.checked = false);
+  hide('fieldTo'); hide('seniority');
+  hide('stepDone'); show('step1');
+  selections = {}; hideMsg();
+}
+
+// ========== INIT ==========
+loadDots();
+</script>
+</body>
+</html>
