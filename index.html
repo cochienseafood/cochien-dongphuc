@@ -297,7 +297,7 @@
 
 <script>
 // ========== CONFIG ==========
-const URL_GAS = 'https://script.google.com/macros/s/AKfycbxdbNoPpnCC6gVTcuStDHj6WWPNLIxWgAtj9itisDUdNrDF_kWVQyCNkoqJtmasPncF/exec';
+const URL_GAS = 'https://script.google.com/macros/s/AKfycbxiS7E19hok-A9_5nQTElj0y_CcVY5iLLWm4HSVveK4lOOl2hbIcEQhNmfs6HGN2tbqcQ/exec';
 
 const PROC_DEPTS = ['Px Cook','Px Raw','Px Lạnh'];
 const YEAR = new Date().getFullYear();
@@ -412,17 +412,36 @@ async function goToStep2() {
   if (!gender)                        errs.push('Chọn giới tính');
   if (errs.length) { showMsg('❌ ' + errs.join(' | '), 'error'); return; }
 
-  // Kiểm tra barcode trùng
+  // Kiểm tra barcode trùng — server + local cache
   const btn = document.querySelector('#step1 .btn-primary');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Đang kiểm tra...';
+
+  // 1. Kiểm tra local cache trước (nhanh, không cần mạng)
+  const cacheKey = 'registered_' + dot;
+  let localCache = [];
+  try { localCache = JSON.parse(localStorage.getItem(cacheKey) || '[]'); } catch(e) {}
+  if (localCache.includes(bc.toUpperCase())) {
+    showMsg(`❌ Barcode ${bc} đã đăng ký trong đợt này rồi!`, 'error');
+    btn.disabled = false; btn.textContent = 'Tiếp tục →'; return;
+  }
+
+  // 2. Kiểm tra server
   try {
     const res = await jsonp({action:'checkBarcode', barcode: bc, dot});
     if (res.exists) {
       showMsg(`❌ Barcode ${bc} đã đăng ký trong đợt này rồi!`, 'error');
+      // Cập nhật local cache
+      if (!localCache.includes(bc.toUpperCase())) {
+        localCache.push(bc.toUpperCase());
+        localStorage.setItem(cacheKey, JSON.stringify(localCache));
+      }
       btn.disabled = false; btn.textContent = 'Tiếp tục →'; return;
     }
-  } catch(e) { /* bỏ qua nếu lỗi mạng */ }
+  } catch(e) {
+    showMsg(`❌ Không kết nối được server. Kiểm tra mạng và thử lại!`, 'error');
+    btn.disabled = false; btn.textContent = 'Tiếp tục →'; return;
+  }
   btn.disabled = false; btn.textContent = 'Tiếp tục →';
 
   // Setup selection screen
@@ -567,6 +586,14 @@ async function finish() {
       selections: JSON.stringify(selections)
     });
     if (res.success) {
+      // Lưu barcode vào local cache để ngăn nhập trùng
+      const cacheKey2 = 'registered_' + dot;
+      let cache2 = [];
+      try { cache2 = JSON.parse(localStorage.getItem(cacheKey2) || '[]'); } catch(e) {}
+      if (!cache2.includes(bc.toUpperCase())) {
+        cache2.push(bc.toUpperCase());
+        localStorage.setItem(cacheKey2, JSON.stringify(cache2));
+      }
       const dotName = document.getElementById('selDot').options[document.getElementById('selDot').selectedIndex].text;
       document.getElementById('doneInfo').innerHTML = `
         <p><strong>${name}</strong></p>
