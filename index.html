@@ -297,7 +297,7 @@
 
 <script>
 // ========== CONFIG ==========
-const URL_GAS = 'https://script.google.com/macros/s/AKfycbxiS7E19hok-A9_5nQTElj0y_CcVY5iLLWm4HSVveK4lOOl2hbIcEQhNmfs6HGN2tbqcQ/exec';
+const URL_GAS = 'https://script.google.com/macros/s/AKfycby0vOIDMMx7oOrmAhrxdWHSKzLbh7TOocwX3yjmtL5k9xI0WW3AkHLuuBBBPnORkIOyxw/exec';
 
 const PROC_DEPTS = ['Px Cook','Px Raw','Px Lạnh'];
 const YEAR = new Date().getFullYear();
@@ -314,8 +314,23 @@ const OFFICE_HATS = [
 let selections = {};
 let isLong = false;
 
-// ========== JSONP ==========
-function jsonp(params) {
+// ========== API CALL ==========
+// Thử fetch trước, fallback sang JSONP nếu lỗi
+async function jsonp(params) {
+  // Cách 1: fetch trực tiếp (hoạt động nếu Apps Script cho phép CORS)
+  try {
+    const qs = new URLSearchParams({...params, t: Date.now()});
+    const res = await fetch(URL_GAS + '?' + qs, {
+      method: 'GET',
+      mode: 'cors',
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data;
+    }
+  } catch(e) { /* thử JSONP */ }
+
+  // Cách 2: JSONP fallback
   return new Promise((res, rej) => {
     const cb = 'cb_' + Date.now() + '_' + Math.random().toString(36).slice(2);
     const qs = new URLSearchParams({...params, callback: cb, t: Date.now()});
