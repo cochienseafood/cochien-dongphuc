@@ -264,7 +264,7 @@
 
     <!-- NAM -->
     <div id="secMale" class="hidden">
-      <div class="sec-title">👖 Quần (size 4–8)</div>
+      <div class="sec-title">👖 Quần (size 1–5)</div>
       <div class="size-grid cols5" id="gridPants"></div>
       <div class="sec-title">👕 Áo tay dài (size 4–8)</div>
       <div class="size-grid cols5" id="gridShirtLong"></div>
@@ -297,7 +297,7 @@
 
 <script>
 // ========== CONFIG ==========
-const URL_GAS = 'https://script.google.com/macros/s/AKfycbyEXvGL2nXhHqAjbLBSaNOWLxKkQUajFQSXwUuzC_j1cm_J5vFYhdwHTXpG1AbOBOKLSw/exec';
+const URL_GAS = 'https://script.google.com/macros/s/AKfycbwWHPSbTDI2vI129q-GrDBGPWHezspaiV5mazGGPsSPI1oUwmRNsrQ-FARFoh1EAmvQZw/exec';
 
 const PROC_DEPTS = ['Px Cook','Px Raw','Px Lạnh'];
 const YEAR = new Date().getFullYear();
@@ -508,7 +508,7 @@ function buildGrids(gender, dept) {
     buildGrid('gridFLong',  [1,2,3,4,5,6,7,8].map(s => [`f_long_${s}`,  String(s)]), 'indigo');
     show('secFemale');
   } else {
-    buildGrid('gridPants',     [4,5,6,7,8].map(s => [`m_pants_${s}`,      String(s)]), 'amber');
+    buildGrid('gridPants',     [1,2,3,4,5].map(s => [`m_pants_${s}`,      String(s)]), 'amber');
     buildGrid('gridShirtLong', [4,5,6,7,8].map(s => [`m_shirt_long_${s}`, String(s)]), 'green');
     buildGrid('gridShirtShort',[4,5,6,7,8].map(s => [`m_shirt_short_${s}`,String(s)]), 'cyan');
     show('secMale');
