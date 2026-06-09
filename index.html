@@ -583,12 +583,61 @@ function removeSel(key, btn, badge, del) {
 
 function goBack() { hide('step2'); show('step1'); hideMsg(); }
 
+// ========== VALIDATION TRƯỚC KHI XÁC NHẬN ==========
+function validateSelections(gender, sen) {
+  const isLong = sen >= 3;
+  const maxC = isLong ? 1 : 2;
+  const errors = [];
+
+  const totalAoNu   = getTotal('f_short') + getTotal('f_long');
+  const totalQuan   = getTotal('m_pants');
+  const totalAoNam  = getTotal('m_shirt_long') + getTotal('m_shirt_short');
+  const totalNon    = getTotal('hat_');
+
+  if (gender === 'Nữ') {
+    // Kiểm tra áo nữ
+    if (totalAoNu < maxC) {
+      errors.push(`Chưa chọn đủ áo: cần ${maxC} bộ, hiện có ${totalAoNu} bộ`);
+    }
+  }
+
+  if (gender === 'Nam') {
+    // Kiểm tra quần
+    if (totalQuan < maxC) {
+      errors.push(`Chưa chọn đủ quần: cần ${maxC} cái, hiện có ${totalQuan} cái`);
+    }
+    // Kiểm tra áo nam
+    if (totalAoNam < maxC) {
+      errors.push(`Chưa chọn đủ áo: cần ${maxC} cái, hiện có ${totalAoNam} cái`);
+    }
+  }
+
+  // Kiểm tra nón (tất cả bắt buộc 2 cái cùng màu)
+  if (totalNon < 2) {
+    errors.push(`Chưa chọn đủ nón: cần 2 cái, hiện có ${totalNon} cái`);
+  } else {
+    // Kiểm tra cùng màu
+    const hatColors = {};
+    Object.entries(selections).forEach(([key, qty]) => {
+      if (!key.startsWith('hat_') || qty <= 0) return;
+      const rest = key.replace('hat_', '');
+      // Lấy color id (phần trước dấu _ cuối)
+      const parts = rest.split('_');
+      const colorId = parts.slice(0, parts.length - 1).join('_');
+      hatColors[colorId] = (hatColors[colorId] || 0) + qty;
+    });
+    const colorCount = Object.keys(hatColors).length;
+    if (colorCount > 1) {
+      errors.push('Nón phải cùng màu (hiện đang chọn ' + colorCount + ' màu khác nhau)');
+    }
+  }
+
+  return errors;
+}
+
 // ========== FINISH ==========
 async function finish() {
   if (!Object.keys(selections).length) { showMsg('⚠️ Chưa chọn gì', 'warn'); return; }
-  const btn = document.getElementById('btnFinish');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Đang gửi...';
 
   const name   = document.getElementById('inpName').value.trim();
   const dept   = document.getElementById('inpDept').value;
@@ -597,6 +646,17 @@ async function finish() {
   const gender = document.querySelector('input[name=gender]:checked').value;
   const dot    = document.getElementById('selDot').value;
   const sen    = getSeniority(bc);
+
+  // Kiểm tra đủ điều kiện
+  const errors = validateSelections(gender, sen);
+  if (errors.length > 0) {
+    showMsg('❌ ' + errors.join(' | '), 'error');
+    return;
+  }
+
+  const btn = document.getElementById('btnFinish');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Đang gửi...';
 
   try {
     const res = await jsonp({
