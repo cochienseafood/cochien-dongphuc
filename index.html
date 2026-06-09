@@ -615,11 +615,50 @@ async function finish() {
         localStorage.setItem(cacheKey2, JSON.stringify(cache2));
       }
       const dotName = document.getElementById('selDot').options[document.getElementById('selDot').selectedIndex].text;
+
+      // Build chi tiết đồng phục đã chọn
+      const KEY_LABELS = {
+        f_short: 'Áo nữ tay ngắn', f_long: 'Áo nữ tay dài',
+        m_pants: 'Quần nam', m_shirt_long: 'Áo nam tay dài', m_shirt_short: 'Áo nam tay ngắn',
+        hat_wr: 'Nón Trắng viền đỏ', hat_pw: 'Nón Tím viền trắng', hat_pr: 'Nón Tím viền đỏ',
+        hat_b: 'Nón Xanh dương', hat_wb: 'Nón Trắng viền xanh',
+        hat_gy: 'Nón Xanh viền vàng', hat_yg: 'Nón Vàng viền xanh',
+        hat_y: 'Nón Vàng', hat_yr: 'Nón Vàng viền đỏ', hat_r: 'Nón Đỏ'
+      };
+
+      // Nhóm các item theo loại
+      const groups = {};
+      Object.entries(selections).forEach(([key, qty]) => {
+        if (qty <= 0) return;
+        let label = key, size = '';
+        for (const [prefix, lbl] of Object.entries(KEY_LABELS)) {
+          if (key.startsWith(prefix + '_') || key === prefix) {
+            size = key.replace(prefix + '_', '').replace(prefix, '');
+            label = lbl;
+            break;
+          }
+        }
+        if (!groups[label]) groups[label] = [];
+        groups[label].push(`Size ${size}: ${qty} cái`);
+      });
+
+      const detailRows = Object.entries(groups).map(([lbl, items]) =>
+        `<div style="display:flex;justify-content:space-between;align-items:flex-start;
+          padding:7px 0;border-bottom:1px solid #e5e7eb;">
+          <span style="font-size:13px;color:#374151;font-weight:500;">${lbl}</span>
+          <span style="font-size:13px;color:#1d4ed8;text-align:right;">${items.join('<br>')}</span>
+        </div>`
+      ).join('');
+
       document.getElementById('doneInfo').innerHTML = `
         <p><strong>${name}</strong></p>
         <p>${dept}${to?' – '+to:''} | ${gender}</p>
         <p>Barcode: <strong>${bc}</strong></p>
-        <p>Đợt: <strong>${dotName}</strong></p>`;
+        <p>Đợt: <strong>${dotName}</strong></p>
+        <div style="margin-top:12px;border-top:2px solid #1d4ed8;padding-top:10px;">
+          <p style="font-size:12px;font-weight:700;color:#1d4ed8;margin-bottom:6px;">📋 CHI TIẾT ĐĂNG KÝ:</p>
+          ${detailRows}
+        </div>`;
       hide('step2'); hideMsg(); show('stepDone');
     } else {
       showMsg('❌ ' + res.message, 'error');
