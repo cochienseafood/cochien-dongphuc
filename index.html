@@ -269,9 +269,9 @@
 
     <!-- NỮ -->
     <div id="secFemale" class="hidden">
-      <div class="sec-title">👕 Tay ngắn (size 1–8)</div>
+      <div class="sec-title">👕 Thun tay ngắn (size 1–8)</div>
       <div class="size-grid cols8" id="gridFShort"></div>
-      <div class="sec-title">👕 Tay dài (size 1–8)</div>
+      <div class="sec-title">👕 Thun tay dài (size 1–8)</div>
       <div class="size-grid cols8" id="gridFLong"></div>
     </div>
 
@@ -313,6 +313,7 @@
 const URL_GAS = 'https://script.google.com/macros/s/AKfycbxDuzCvQ9uYRZUdsUnqPe3u4UqFjt7rRv6SlEv-OmD2Ro-8VX-bLtNioGrN7eFtIMQdlA/exec';
 
 const PROC_DEPTS = ['Px Cook','Px Raw','Px Lạnh'];
+const TO_DEPTS = ['Px Cook','Px Raw']; // Chỉ Px Cook và Px Raw mới cần nhập Tổ
 const YEAR = new Date().getFullYear();
 const PROC_HATS = [
   {n:'Trắng viền đỏ',i:'wr'},{n:'Tím viền trắng',i:'pw'},{n:'Tím viền đỏ',i:'pr'},
@@ -405,7 +406,7 @@ async function loadDots() {
 // ========== DEPT CHANGE ==========
 function onDeptChange() {
   const dept = document.getElementById('inpDept').value;
-  if (PROC_DEPTS.includes(dept)) show('fieldTo');
+  if (TO_DEPTS.includes(dept)) show('fieldTo');
   else hide('fieldTo');
 }
 
@@ -436,7 +437,7 @@ async function goToStep2() {
   if (!dot)                           errs.push('Chọn đợt phát');
   if (!name)                          errs.push('Nhập họ tên');
   if (!dept)                          errs.push('Chọn bộ phận');
-  if (PROC_DEPTS.includes(dept) && !to) errs.push('Nhập tổ');
+  if (TO_DEPTS.includes(dept) && !to) errs.push('Nhập tổ');
   if (!bc)                            errs.push('Nhập barcode');
   else if (!/^C\d{2}[A-Z0-9]{4}$/.test(bc)) errs.push('Barcode phải là CyyABCD (7 ký tự)');
   else {
