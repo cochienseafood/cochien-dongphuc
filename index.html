@@ -259,6 +259,14 @@
   <div id="step2" class="card hidden">
     <div class="info-box" id="infoBox"></div>
 
+    <!-- Ghi chú hướng dẫn chọn -->
+    <div style="background:#fef9c3;border:1px solid #fbbf24;border-radius:8px;padding:9px 12px;margin-bottom:12px;font-size:12px;color:#92400e;">
+      💡 <strong>Cách chọn:</strong>
+      Nhấn <strong>1 lần</strong> vào size = chọn 1 cái &nbsp;|&nbsp;
+      Nhấn <strong>2 lần</strong> = chọn 2 cái &nbsp;|&nbsp;
+      Nhấn <strong>✕</strong> để bỏ chọn
+    </div>
+
     <!-- NỮ -->
     <div id="secFemale" class="hidden">
       <div class="sec-title">👕 Tay ngắn (size 1–8)</div>
@@ -381,6 +389,8 @@ async function loadDots() {
       sel.innerHTML = res.data.map(d =>
         `<option value="${d.id}">${d.name}</option>`
       ).join('');
+      // Tự động chọn đợt mới nhất (cuối danh sách)
+      sel.selectedIndex = sel.options.length - 1;
       hideMsg();
     } else {
       sel.innerHTML = '<option value="">-- Chưa có đợt nào --</option>';
@@ -429,6 +439,12 @@ async function goToStep2() {
   if (PROC_DEPTS.includes(dept) && !to) errs.push('Nhập tổ');
   if (!bc)                            errs.push('Nhập barcode');
   else if (!/^C\d{2}[A-Z0-9]{4}$/.test(bc)) errs.push('Barcode phải là CyyABCD (7 ký tự)');
+  else {
+    const yy = parseInt(bc.substring(1, 3));
+    const bcYear = 2000 + yy;
+    if (bcYear > YEAR) errs.push(`Barcode sai năm: năm ${bcYear} lớn hơn năm hiện tại (${YEAR})`);
+    if (bcYear < 2010) errs.push(`Barcode sai năm: năm ${bcYear} không hợp lệ`);
+  }
   if (!gender)                        errs.push('Chọn giới tính');
   if (errs.length) { showMsg('❌ ' + errs.join(' | '), 'error'); return; }
 
