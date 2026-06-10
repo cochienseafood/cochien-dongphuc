@@ -564,7 +564,7 @@ function addSel(key, color, btn, badge, del) {
   hideMsg();
   const max = maxClothes();
   if ((key.includes('f_short')||key.includes('f_long')) && getTotal('f_short')+getTotal('f_long') >= max) {
-    showMsg(`⚠️ Áo nữ tối đa ${max} bộ`, 'warn'); return;
+    showMsg(`⚠️ Thun nữ tối đa ${max} bộ`, 'warn'); return;
   }
   if (key.includes('m_pants') && getTotal('m_pants') >= max) {
     showMsg(`⚠️ Quần tối đa ${max} cái`, 'warn'); return;
@@ -614,7 +614,7 @@ function validateSelections(gender, sen) {
   if (gender === 'Nữ') {
     // Kiểm tra áo nữ
     if (totalAoNu < maxC) {
-      errors.push(`Chưa chọn đủ áo: cần ${maxC} bộ, hiện có ${totalAoNu} bộ`);
+      errors.push(`Chưa chọn đủ thun: cần ${maxC} bộ, hiện có ${totalAoNu} bộ`);
     }
   }
 
@@ -625,7 +625,7 @@ function validateSelections(gender, sen) {
     }
     // Kiểm tra áo nam
     if (totalAoNam < maxC) {
-      errors.push(`Chưa chọn đủ áo: cần ${maxC} cái, hiện có ${totalAoNam} cái`);
+      errors.push(`Chưa chọn đủ thun: cần ${maxC} cái, hiện có ${totalAoNam} cái`);
     }
   }
 
@@ -695,7 +695,7 @@ async function finish() {
 
       // Build chi tiết đồng phục đã chọn
       const KEY_LABELS = {
-        f_short: 'Áo nữ tay ngắn', f_long: 'Áo nữ tay dài',
+        f_short: 'Thun nữ tay ngắn', f_long: 'Thun nữ tay dài',
         m_pants: 'Quần nam', m_shirt_long: 'Áo nam tay dài', m_shirt_short: 'Áo nam tay ngắn',
         hat_wr: 'Nón Trắng viền đỏ', hat_pw: 'Nón Tím viền trắng', hat_pr: 'Nón Tím viền đỏ',
         hat_b: 'Nón Xanh dương', hat_wb: 'Nón Trắng viền xanh',
