@@ -546,7 +546,7 @@ function buildGrids(gender, dept) {
     div.innerHTML = `<p>${h.n}</p>`;
     const grid = document.createElement('div');
     grid.className = 'size-grid cols4';
-    [1,2,3,4].forEach(s => grid.appendChild(makeBtn(`hat_${h.i}_${s}`, `S${s}`, 'purple')));
+    [1,2,3,4].forEach(s => grid.appendChild(makeBtn(`hat_${h.i}_${s}`, `${s}`, 'purple')));
     div.appendChild(grid);
     sec.appendChild(div);
   });
