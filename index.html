@@ -503,17 +503,14 @@ function makeBtn(key, label, color) {
   const btn = document.createElement('button');
   btn.className = 'size-btn';
   btn.textContent = label;
-  btn.onclick = () => addSel(key, color, btn, badge, del);
-
-  const badge = document.createElement('div');
-  badge.className = 'badge hidden';
+  btn.onclick = () => addSel(key, color, btn, del);
 
   const del = document.createElement('button');
   del.className = 'del-btn hidden';
   del.textContent = '✕';
-  del.onclick = (e) => { e.stopPropagation(); removeSel(key, btn, badge, del); };
+  del.onclick = (e) => { e.stopPropagation(); removeSel(key, btn, del); };
 
-  wrap.appendChild(btn); wrap.appendChild(badge); wrap.appendChild(del);
+  wrap.appendChild(btn); wrap.appendChild(del);
   return wrap;
 }
 
@@ -560,7 +557,7 @@ function getTotal(type) {
 }
 function maxClothes() { return isLong ? 1 : 2; }
 
-function addSel(key, color, btn, badge, del) {
+function addSel(key, color, btn, del) {
   hideMsg();
   const max = maxClothes();
   if ((key.includes('f_short')||key.includes('f_long')) && getTotal('f_short')+getTotal('f_long') >= max) {
@@ -578,11 +575,10 @@ function addSel(key, color, btn, badge, del) {
   selections[key] = (selections[key]||0) + 1;
   btn.className = 'size-btn selected-' + color;
   btn.textContent = btn.textContent.replace(/ \(\d+\)$/,'') + ` (${selections[key]})`;
-  badge.textContent = selections[key]; badge.classList.remove('hidden');
   del.classList.remove('hidden');
 }
 
-function removeSel(key, btn, badge, del) {
+function removeSel(key, btn, del) {
   hideMsg();
   if (!selections[key]) return;
   selections[key]--;
@@ -590,10 +586,8 @@ function removeSel(key, btn, badge, del) {
     delete selections[key];
     btn.className = 'size-btn';
     btn.textContent = btn.textContent.replace(/ \(\d+\)$/,'');
-    badge.classList.add('hidden');
     del.classList.add('hidden');
   } else {
-    badge.textContent = selections[key];
     btn.textContent = btn.textContent.replace(/ \(\d+\)$/,'') + ` (${selections[key]})`;
   }
 }
